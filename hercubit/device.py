@@ -9,7 +9,10 @@ from platform import system
 
 t0=time()
 
-def connect(bluetooth_enabled=True):
+SERIAL_PORTS=['/dev/tty.HC-06-DevB','/dev/tty.HC-06-DevB-1','/dev/tty.HC-06-DevB-2','/dev/tty.HC-06-DevB-3','/dev/tty.OpenPilot-BT-DevB']
+
+
+def connect(bluetooth_enabled=True,SERIAL_PORTS=SERIAL_PORTS):
     conn_type=""
     if system()== 'Darwin': # Mac OSX
         
@@ -33,8 +36,6 @@ def connect(bluetooth_enabled=True):
                     # Bluetooth attempts to connect
                     ####
                     print "Attempting to connect to bluetooth...\n"
-                    #SERIAL_PORTS=['/dev/tty.HC-06-DevB','/dev/tty.HC-06-DevB-1','/dev/tty.HC-06-DevB-2','/dev/tty.HC-06-DevB-3','/dev/tty.OpenPilot-BT-DevB']
-                    SERIAL_PORTS=['/dev/tty.HC-06-DevB-2']
                     SERIAL_SPEED=57600
                     for port in SERIAL_PORTS:
                         try:
