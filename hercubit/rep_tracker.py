@@ -1,5 +1,5 @@
 # Attribution: https://gist.github.com/schlady/1576079
-import numpy as np
+# import numpy as np
 import settings
 import time
 
@@ -45,18 +45,19 @@ def peakdetect(y_axis, x_axis = None, lookahead = 500, delta = 0):
         raise ValueError, "Input vectors y_axis and x_axis must have same length"
     if lookahead < 1:
         raise ValueError, "Lookahead must be above '1' in value"
-    if not (np.isscalar(delta) and delta >= 0):
-        raise ValueError, "delta must be a positive number"
+    # if not (np.isscalar(delta) and delta >= 0):
+    #     raise ValueError, "delta must be a positive number"
     
     #needs to be a numpy array
-    y_axis = np.asarray(y_axis)
-    
+    # y_axis = np.asarray(y_axis)
+    inf=10000000
     #maxima and minima candidates are temporarily stored in
     #mx and mn respectively
-    mn, mx = np.Inf, -np.Inf
+    mn, mx = inf, -inf
     
     #Only detect peak if there is 'lookahead' amount of points after it
     for index, (x, y) in enumerate(zip(x_axis[:-lookahead], y_axis[:-lookahead])):
+        # if index==1: mn, mx = y,y
         if y > mx:
             mx = y
             mxpos = x
@@ -65,29 +66,28 @@ def peakdetect(y_axis, x_axis = None, lookahead = 500, delta = 0):
             mnpos = x
         
         ####look for max####
-        if y < mx-delta and mx != np.Inf:
+        if y < mx-delta and mx != inf:
             #Maxima peak candidate found
             #look ahead in signal to ensure that this is a peak and not jitter
-            if y_axis[index:index+lookahead].max() < mx:
+            if max(y_axis[index:index+lookahead]) < mx:
                 maxtab.append((mxpos, mx))
                 dump.append(True)
                 #set algorithm to only find minima now
-                mx = np.Inf
-                mn = np.Inf
+                mx = inf
+                mn = inf
         ## Morgan's addition
-        y    
             
         
         ####look for min####
-        if y > mn+delta and mn != -np.Inf:
+        if y > mn+delta and mn != -inf:
             #Minima peak candidate found 
             #look ahead in signal to ensure that this is a peak and not jitter
-            if y_axis[index:index+lookahead].min() > mn:
+            if min(y_axis[index:index+lookahead]) > mn:
                 mintab.append((mnpos, mn))
                 dump.append(False)
                 #set algorithm to only find maxima now
-                mn = -np.Inf
-                mx = -np.Inf
+                mn = -inf
+                mx = -inf
     
     
     #Remove the false hit on the first value of the y_axis
@@ -106,6 +106,12 @@ def peakdetect(y_axis, x_axis = None, lookahead = 500, delta = 0):
     return maxtab, mintab
 
 
+def std(mylist):
+    ave=sum(mylist)/len(mylist)
+    deviations= [abs(x - ave)**2 for x in mylist]
+    # print deviations
+    st_dev= (sum(deviations)/len(deviations))**.5
+    return st_dev
 ###
 # Function by Morgan Wallace
 #
@@ -120,7 +126,7 @@ y=[]
 z=[]
 rep_count=0
  # changes- get rid of first 8 lines- move them to main()
-def live_peaks(sample,debug=False,dataset='archive',lookahead=3,elim_first_value=True,get_features=False):
+def live_peaks(sample,debug=False,dataset='archive',lookahead=9,elim_first_value=True,get_features=False):
     global deltas, last_peaks,t,y,x,z,rep_count
 
     # #refresh
@@ -157,19 +163,19 @@ def live_peaks(sample,debug=False,dataset='archive',lookahead=3,elim_first_value
     # Test for completion of repitition
     # ...Once all axes have min and max
     peaks_soFar= sum([1 for i in x_peaks+y_peaks+z_peaks if i!=[]])
-    # print peaks_soFar
-    sds={}
-    sds['x']=np.std(x)
-    sds['y']=np.std(y)
-    sds['z']=np.std(z)
-    avg={}
-    avg['x']=sum(x)/len(x)
-    avg['y']=sum(y)/len(y)
-    avg['z']=sum(z)/len(z)
+    print peaks_soFar
     peak_cutoff=3
     if peaks_soFar<peak_cutoff: return None #not enough peaks yet to be a repitition
-    if peaks_soFar>=peak_cutoff and peaks_soFar<=5:
-        
+    if peaks_soFar>=peak_cutoff:
+
+        sds={}
+        sds['x']=std(x)
+        sds['y']=std(y)
+        sds['z']=std(z)
+        avg={}
+        avg['x']=sum(x)/len(x)
+        avg['y']=sum(y)/len(y)
+        avg['z']=sum(z)/len(z)
 
         if sds['y']>.42 and sds['x']>0.09 and sds['z']>0.13: # bicep curls
             if peaks_soFar<5: 
@@ -247,9 +253,9 @@ def live_peaks(sample,debug=False,dataset='archive',lookahead=3,elim_first_value
         avg['y']=sum(y)/len(y)
         avg['z']=sum(z)/len(z)
         sds={}
-        sds['x']=np.std(x)
-        sds['y']=np.std(y)
-        sds['z']=np.std(z)
+        sds['x']=std(x)
+        sds['y']=std(y)
+        sds['z']=std(z)
         
         features={'peak start':t[0],'ranges':ranges,'means':avg,"standard deviations":sds,'peak end':end}
         
