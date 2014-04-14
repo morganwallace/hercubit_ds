@@ -22,7 +22,8 @@ if 'production' not in sys.argv:
 elif "bt" in sys.argv:
 	bluetooth_enabled=True
 else:
-	bluetooth_enabled=False
+	# bluetooth_enabled=False
+	pass
 
 app.config['SECRET_KEY'] = 'secret!'
 # socketio = SocketIO(app)
