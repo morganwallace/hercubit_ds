@@ -18,6 +18,12 @@ import pickle
 app = Flask(__name__)
 if 'production' not in sys.argv:
 	app.debug=True  # Disabled before distributing
+	bluetooth_enabled=True
+elif "bt" in sys.argv:
+	bluetooth_enabled=True
+else:
+	bluetooth_enabled=False
+
 app.config['SECRET_KEY'] = 'secret!'
 # socketio = SocketIO(app)
 device_data_generator=[]
@@ -255,11 +261,10 @@ def updateActivity():
 # @socketio.on('bluetooth_conn', namespace='/test')
 @app.route('/bluetooth_conn')
 def bluetooth_conn():
-	global device_data_generator, DEVICE_CONNECTED, ser
+	global device_data_generator, DEVICE_CONNECTED, ser, bluetooth_enabled
 	print "user requested connection"
 	DEVICE_CONNECTED=True
 	from hercubit import device
-	bluetooth_enabled=False
 	ser,conn_type=device.connect(bluetooth_enabled=bluetooth_enabled)
 	device_data_generator=device.sensor_stream(ser,conn_type)#simulate_sample_rate=False
 	from hercubit.settings import sampleRate
