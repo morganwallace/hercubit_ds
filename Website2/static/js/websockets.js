@@ -11,7 +11,7 @@ $(document).ready(function(){
             $("#connection_status").text("Searching for Hercubit device on bluetooth");
             $("#count_denomenator").text("/"+$("#chosen-goal .goal_count").text());
             $.ajax({
-                url:'bluetooth_conn',
+                url:'./bluetooth_conn',
                 success: function(msg){
                     //Device is connected now so request data from server at the sample rate
                     // socket.on('connection established', function(msg) {
