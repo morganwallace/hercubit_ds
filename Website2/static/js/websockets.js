@@ -15,6 +15,10 @@ $(document).ready(function(){
                 success: function(msg){
                     //Device is connected now so request data from server at the sample rate
                     // socket.on('connection established', function(msg) {
+                    if (msg.connected==true){
+                        $("#connection_status").text("Problem with Connection. Turn Hercubit off and on and restart application.");
+                        return
+                    }
                     $('#log').append('<p>Bluetooth Connection Established</p>');
                     $("#connection_status").text("Connected. Start Exercising!");
                     fetch_data = setInterval( function() { 

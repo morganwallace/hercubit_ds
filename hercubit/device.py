@@ -62,7 +62,7 @@ def connect(bluetooth_enabled=True,SERIAL_PORTS=SERIAL_PORTS):
             pass
 
 
-        
+    
         
     try:
         ser
@@ -70,6 +70,7 @@ def connect(bluetooth_enabled=True,SERIAL_PORTS=SERIAL_PORTS):
     
     #Archive
     except:
+        if bluetooth_enabled==True: return None,None
      #if no serial connection available simulate with old file
         # import pickle
         print "\nNo serial connection available. Falling back on archived data..."

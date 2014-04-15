@@ -267,6 +267,9 @@ def bluetooth_conn():
 	DEVICE_CONNECTED=True
 	from hercubit import device
 	ser,conn_type=device.connect(bluetooth_enabled=bluetooth_enabled)
+	if ser==None:
+		resp = make_response(jsonify(connected=False))
+		return resp
 	device_data_generator=device.sensor_stream(ser,conn_type)#simulate_sample_rate=False
 	from hercubit.settings import sampleRate
 	resp = make_response(jsonify(sampleRate=sampleRate,bluetooth_enabled=bluetooth_enabled))
@@ -372,9 +375,9 @@ def exit():
     
 
 if __name__ == '__main__':
-    import webbrowser
-    # if app.debug!=True:
+	import webbrowser
+	# if app.debug!=True:
 	webbrowser.open_new_tab('http://localhost:5000')
-    # socketio.run(app)
-    app.run()
+	# socketio.run(app)
+	app.run()
 
