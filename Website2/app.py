@@ -311,12 +311,12 @@ def addexercise():
 	count=request.form['count']
 	weight=request.form['weight']
 	goal_complete=request.form['goal_complete']
-	all_data={"raw":all_data,"count":count,"username":username,"exercise":exercise,'weight':weight}
+	saved_data={"raw":all_data,"count":count,"username":username,"exercise":exercise,'weight':weight}
 	# app.logger.debug(all_data)
-
+	if os.path.exists('saved')==False: os.mkdir('saved')
 	path=os.path.join("saved",time.strftime("%m-%d-%Y--%H-%M-%S")+".p")
 	print os.listdir(os.getcwd())
-	pickle.dump( all_data, open( path, "wb" ) )
+	pickle.dump( saved_data, open( path, "wb" ) )
 
 	url="http://people.ischool.berkeley.edu/~katehsiao/hercubit-db/insertNewExercise.php?username="+username+"&exercise="+exercise+"&count="+str(count)+"&weight="+str(weight)+"&goal_complete="+goal_complete
 	app.logger.debug("Exercise added to DB:\n"+str(exercise_data))
@@ -373,8 +373,8 @@ def exit():
 
 if __name__ == '__main__':
     import webbrowser
-    if app.debug!=True:
-    	webbrowser.open_new_tab('http://localhost:5000')
+    # if app.debug!=True:
+	webbrowser.open_new_tab('http://localhost:5000')
     # socketio.run(app)
     app.run()
 
